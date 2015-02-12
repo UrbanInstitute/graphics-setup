@@ -1,0 +1,95 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.35
+4 verbose readDependencies using package.json deps
+5 verbose install where, deps [ '/Users/bchartof/projects/yeoman/graphics-setup',
+5 verbose install   [ 'chalk',
+5 verbose install     'github',
+5 verbose install     'lodash',
+5 verbose install     'npm-name',
+5 verbose install     'superb',
+5 verbose install     'underscore.string',
+5 verbose install     'yeoman-generator',
+5 verbose install     'yosay',
+5 verbose install     'async',
+5 verbose install     'grunt',
+5 verbose install     'grunt-http',
+5 verbose install     'mocha',
+5 verbose install     'mockery' ] ]
+6 info preinstall generator-generator@0.6.0
+7 verbose readDependencies using package.json deps
+8 verbose already installed skipping chalk@^0.5.1 /Users/bchartof/projects/yeoman/graphics-setup
+9 verbose already installed skipping github@^0.2.1 /Users/bchartof/projects/yeoman/graphics-setup
+10 verbose already installed skipping lodash@^2.4.1 /Users/bchartof/projects/yeoman/graphics-setup
+11 verbose already installed skipping npm-name@^1.0.1 /Users/bchartof/projects/yeoman/graphics-setup
+12 verbose already installed skipping superb@^1.0.0 /Users/bchartof/projects/yeoman/graphics-setup
+13 verbose already installed skipping underscore.string@^2.4.0 /Users/bchartof/projects/yeoman/graphics-setup
+14 verbose already installed skipping yeoman-generator@^0.18.1 /Users/bchartof/projects/yeoman/graphics-setup
+15 verbose already installed skipping yosay@^1.0.0 /Users/bchartof/projects/yeoman/graphics-setup
+16 verbose already installed skipping async@0.9.X /Users/bchartof/projects/yeoman/graphics-setup
+17 verbose already installed skipping grunt@^0.4.5 /Users/bchartof/projects/yeoman/graphics-setup
+18 verbose already installed skipping grunt-http@^1.5.0 /Users/bchartof/projects/yeoman/graphics-setup
+19 verbose already installed skipping mocha@^2.0.1 /Users/bchartof/projects/yeoman/graphics-setup
+20 verbose already installed skipping mockery@^1.4.0 /Users/bchartof/projects/yeoman/graphics-setup
+21 silly resolved []
+22 info build /Users/bchartof/projects/yeoman/graphics-setup
+23 verbose linkStuff [ false, false, false, '/Users/bchartof/projects/yeoman' ]
+24 info linkStuff generator-generator@0.6.0
+25 verbose linkBins generator-generator@0.6.0
+26 verbose linkMans generator-generator@0.6.0
+27 verbose rebuildBundles generator-generator@0.6.0
+28 verbose rebuildBundles [ '.bin',
+28 verbose rebuildBundles   'async',
+28 verbose rebuildBundles   'chalk',
+28 verbose rebuildBundles   'github',
+28 verbose rebuildBundles   'grunt',
+28 verbose rebuildBundles   'grunt-cli',
+28 verbose rebuildBundles   'grunt-http',
+28 verbose rebuildBundles   'lodash',
+28 verbose rebuildBundles   'mocha',
+28 verbose rebuildBundles   'mockery',
+28 verbose rebuildBundles   'npm-name',
+28 verbose rebuildBundles   'superb',
+28 verbose rebuildBundles   'underscore.string',
+28 verbose rebuildBundles   'yeoman-generator',
+28 verbose rebuildBundles   'yosay' ]
+29 verbose rebuild bundle /Users/bchartof/projects/yeoman/graphics-setup/node_modules/grunt-cli
+30 info build /Users/bchartof/projects/yeoman/graphics-setup/node_modules/grunt-cli
+31 info preinstall grunt-cli@0.1.13
+32 verbose linkStuff [ false,
+32 verbose linkStuff   false,
+32 verbose linkStuff   false,
+32 verbose linkStuff   '/Users/bchartof/projects/yeoman/graphics-setup/node_modules' ]
+33 info linkStuff grunt-cli@0.1.13
+34 warn prefer global grunt-cli@0.1.13 should be installed with -g
+35 verbose linkBins grunt-cli@0.1.13
+36 verbose link bins [ { grunt: 'bin/grunt' },
+36 verbose link bins   '/Users/bchartof/projects/yeoman/graphics-setup/node_modules/.bin',
+36 verbose link bins   false ]
+37 verbose linkMans grunt-cli@0.1.13
+38 verbose rebuildBundles grunt-cli@0.1.13
+39 verbose rebuildBundles [ '.bin', 'findup-sync', 'nopt', 'resolve' ]
+40 info install grunt-cli@0.1.13
+41 info postinstall grunt-cli@0.1.13
+42 info install generator-generator@0.6.0
+43 info postinstall generator-generator@0.6.0
+44 verbose unsafe-perm in lifecycle true
+45 info generator-generator@0.6.0 Failed to exec postinstall script
+46 error generator-generator@0.6.0 postinstall: `npm link ../local_modules/urbansay`
+46 error Exit status 34
+47 error Failed at the generator-generator@0.6.0 postinstall script.
+47 error This is most likely a problem with the generator-generator package,
+47 error not with npm itself.
+47 error Tell the author that this fails on your system:
+47 error     npm link ../local_modules/urbansay
+47 error You can get their info via:
+47 error     npm owner ls generator-generator
+47 error There is likely additional logging output above.
+48 error System Darwin 14.0.0
+49 error command "node" "/usr/local/bin/npm" "install"
+50 error cwd /Users/bchartof/projects/yeoman/graphics-setup
+51 error node -v v0.10.35
+52 error npm -v 1.4.28
+53 error code ELIFECYCLE
+54 verbose exit [ 1, true ]

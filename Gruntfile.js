@@ -63,13 +63,8 @@ module.exports = function (grunt) {
             target = null
           }
        }
-       // var target = response.filter(function(obj){
-       //    return obj.app.name = "urban graphics (API)"
-       // })
-       // console.log(foo)
-       grunt.file.write('tmp/test.js',JSON.stringify(target));
+       grunt.file.write('tmp/token.js',JSON.stringify(target));
     });
-    // grunt.registerTask('t1',['create_token'])
 };
 
 

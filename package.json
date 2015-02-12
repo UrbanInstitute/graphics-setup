@@ -20,7 +20,9 @@
     "url": "https://github.com/yeoman/generator-generator.git"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "postinstall": "npm link local_modules/urbansay",
+    "postupdate": "npm link local_modules/urbansay"
   },
   "dependencies": {
     "chalk": "^0.5.1",
