@@ -76,11 +76,25 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
 
       this.log(yosay('Create your own ' + chalk.red('Yeoman') + ' generator with superpowers!'));
 
-      var prompts = [{
-        name: 'githubUser',
-        message: 'Would you mind telling me your username on GitHub?',
-        default: 'someuser'
-      }];
+
+      var prompts = [
+        {
+          name: 'urbanUser',
+          message: 'Please enter your Urban username (first letter + last name, not the shortened version)',
+          default: 'someuser'
+        },
+        {
+          name: 'githubUser',
+          message: 'Please enter your GitHub username:',
+          default: 'someuser'
+        },
+        {
+          name: 'githubPassword',
+          message: 'Please enter your GitHub password:',
+          default: 'somepassword'
+        }
+      ];
+
 
       this.prompt(prompts, function (props) {
         this.githubUser = props.githubUser;
@@ -133,6 +147,7 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
       if (this.appname !== _.last(this.destinationRoot().split(path.sep))) {
         this.destinationRoot(this.appname);
       }
+      // this.destinationRoot('/Users/bchartof/projects'+this.appname)
       this.config.save();
     },
 
@@ -159,6 +174,10 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
     },
 
     gitfiles: function () {
+      this.spawnCommand('git',['init']);
+      // this.spawnCommand('grunt',['http:get_tokens','--githubUser='+this.githubUser,'--githubPassword='+this.githubPassword]);
+      // this.githubToken = "fake_token"
+      // this.template('_config.js','config.js')
       this.copy('gitattributes', '.gitattributes');
       this.copy('gitignore', '.gitignore');
     },
@@ -183,6 +202,11 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
   install: function () {
     this.installDependencies({
       skipInstall: this.options['skip-install'],
+      callback: function () {
+        this.spawnCommand('grunt',['http:get_tokens','--githubUser='+this.githubUser,'--githubPassword='+this.githubPassword]);
+        this.githubToken = "fake_token"
+        this.template('_config.js','config.js')
+      }.bind(this),
       bower: false
     });
   }
