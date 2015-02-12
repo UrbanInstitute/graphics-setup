@@ -8,6 +8,7 @@ var npmName = require('npm-name');
 var superb = require('superb');
 var _ = require('lodash');
 var _s = require('underscore.string');
+// var async = require('async');
 
 /* jshint -W106 */
 var proxy = process.env.http_proxy || process.env.HTTP_PROXY || process.env.https_proxy ||
@@ -28,23 +29,23 @@ if (proxy) {
 var GitHubApi = require('github');
 var github = new GitHubApi(githubOptions);
 
-if (process.env.GITHUB_TOKEN) {
-  github.authenticate({
-    type: 'oauth',
-    token: process.env.GITHUB_TOKEN
-  });
-}
+// if (process.env.GITHUB_TOKEN) {
+//   github.authenticate({
+//     type: 'oauth',
+//     token: process.env.GITHUB_TOKEN
+//   });
+// }
 
-var extractGeneratorName = function (appname) {
-  var slugged = _s.slugify(appname);
-  var match = slugged.match(/^generator-(.+)/);
+// var extractGeneratorName = function (appname) {
+//   var slugged = _s.slugify(appname);
+//   var match = slugged.match(/^generator-(.+)/);
 
-  if (match && match.length === 2) {
-    return match[1].toLowerCase();
-  }
+//   if (match && match.length === 2) {
+//     return match[1].toLowerCase();
+//   }
 
-  return slugged;
-};
+//   return slugged;
+// };
 
 var emptyGithubRes = {
   name: '',
@@ -66,6 +67,8 @@ var githubUserInfo = function (name, cb, log) {
 
 var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
   initializing: function () {
+    this.appname = "apps-generator"
+    this.generatorName = "apps"
     this.pkg = require('../package.json');
     this.currentYear = (new Date()).getFullYear();
   },
@@ -98,48 +101,49 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
 
       this.prompt(prompts, function (props) {
         this.githubUser = props.githubUser;
-
+        this.githubPassword = props.githubPassword;
+        this.spawnCommand('grunt',['--githubUser='+this.githubUser,'--githubPassword='+this.githubPassword,'http:create_token']);
         done();
       }.bind(this));
     },
 
-    askForGeneratorName: function () {
-      var done = this.async();
-      var generatorName = extractGeneratorName(this.appname);
+  //   askForGeneratorName: function () {
+  //     var done = this.async();
+  //     var generatorName = extractGeneratorName(this.appname);
 
-      var prompts = [{
-        name: 'generatorName',
-        message: 'What\'s the base name of your generator?',
-        default: generatorName
-      }, {
-        type: 'confirm',
-        name: 'askNameAgain',
-        message: 'The name above already exists on npm, choose another?',
-        default: true,
-        when: function (answers) {
-          var done = this.async();
-          var name = 'generator-' + answers.generatorName;
-          npmName(name, function (err, available) {
-            if (!available) {
-              done(true);
-            }
+  //     var prompts = [{
+  //       name: 'generatorName',
+  //       message: 'What\'s the base name of your generator?',
+  //       default: generatorName
+  //     }, {
+  //       type: 'confirm',
+  //       name: 'askNameAgain',
+  //       message: 'The name above already exists on npm, choose another?',
+  //       default: true,
+  //       when: function (answers) {
+  //         var done = this.async();
+  //         var name = 'generator-' + answers.generatorName;
+  //         npmName(name, function (err, available) {
+  //           if (!available) {
+  //             done(true);
+  //           }
 
-            done(false);
-          });
-        }
-      }];
+  //           done(false);
+  //         });
+  //       }
+  //     }];
 
-      this.prompt(prompts, function (props) {
-        if (props.askNameAgain) {
-          return this.prompting.askForGeneratorName.call(this);
-        }
+  //     this.prompt(prompts, function (props) {
+  //       if (props.askNameAgain) {
+  //         return this.prompting.askForGeneratorName.call(this);
+  //       }
 
-        this.generatorName = props.generatorName;
-        this.appname = 'generator-' + this.generatorName;
+  //       this.generatorName = props.generatorName;
+  //       this.appname = 'generator-' + this.generatorName;
 
-        done();
-      }.bind(this));
-    }
+  //       done();
+  //     }.bind(this));
+  //   }
   },
 
   configuring: {
@@ -159,6 +163,7 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
         this.realname = res.name;
         this.email = res.email;
         this.githubUrl = res.html_url;
+        this.spawnCommand('grunt',['--githubUser='+this.githubUser,'--githubPassword='+this.githubPassword,'http:get_tokens']);
         done();
       }.bind(this), this.log);
     }
@@ -200,10 +205,27 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
   },
 
   install: function () {
+    var done = this.async();
     this.installDependencies({
       skipInstall: this.options['skip-install'],
       callback: function () {
-        this.spawnCommand('grunt',['http:get_tokens','--githubUser='+this.githubUser,'--githubPassword='+this.githubPassword]);
+        // gen.spawnCommand('grunt',['--githubUser='+gen.githubUser,'--githubPassword='+gen.githubPassword,'http:create_token']);
+        // // done();
+        // gen.spawnCommand('grunt',['--githubUser='+gen.githubUser,'--githubPassword='+gen.githubPassword,'http:get_tokens']);
+
+        // // async.series([
+        // //   function(callback){
+        // //     gen.spawnCommand('grunt',['--githubUser='+gen.githubUser,'--githubPassword='+gen.githubPassword,'http:create_token']);
+        // //     callback(null, null);
+        // //   },
+        // //   function(callback){
+        // //     gen.spawnCommand('grunt',['--githubUser='+gen.githubUser,'--githubPassword='+gen.githubPassword,'http:get_tokens']);
+        // //     callback(null, null);
+        // //   }
+        // // ]);
+
+        
+       
         this.githubToken = "fake_token"
         this.template('_config.js','config.js')
       }.bind(this),

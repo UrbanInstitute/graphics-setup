@@ -30,7 +30,8 @@
     "superb": "^1.0.0",
     "underscore.string": "^2.4.0",
     "yeoman-generator": "^0.18.1",
-    "yosay": "^1.0.0"
+    "yosay": "^1.0.0",
+    "async": "0.9.X"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

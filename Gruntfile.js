@@ -17,8 +17,7 @@ module.exports = function (grunt) {
             'pass': githubPassword
           },
           ignoreErrors:true
-        },
-        dest:"tmp/new_token.json"
+        }
       },
       get_tokens: {
         options: {
@@ -43,6 +42,14 @@ module.exports = function (grunt) {
 
     // Load in `grunt-http`
     grunt.loadNpmTasks('grunt-http');
+      grunt.registerTask('wait', function () {
+    grunt.log.ok('Waiting for server reload...');
+    var done = this.async();
+    setTimeout(function () {
+      grunt.log.writeln('Done waiting!');
+      done();
+    }, 1500);
+  });
     grunt.registerTask('config', 'config task.', function() {
        var response = grunt.file.readJSON('tmp/all_tokens.json');
        // function tokenExists()
@@ -60,7 +67,7 @@ module.exports = function (grunt) {
        //    return obj.app.name = "urban graphics (API)"
        // })
        // console.log(foo)
-       grunt.file.write('test.js',JSON.stringify(target));
+       grunt.file.write('tmp/test.js',JSON.stringify(target));
     });
     // grunt.registerTask('t1',['create_token'])
 };
