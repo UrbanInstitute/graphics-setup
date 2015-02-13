@@ -30,23 +30,6 @@ if (proxy) {
 var GitHubApi = require('github');
 var github = new GitHubApi(githubOptions);
 
-// if (process.env.GITHUB_TOKEN) {
-//   github.authenticate({
-//     type: 'oauth',
-//     token: process.env.GITHUB_TOKEN
-//   });
-// }
-
-// var extractGeneratorName = function (appname) {
-//   var slugged = _s.slugify(appname);
-//   var match = slugged.match(/^generator-(.+)/);
-
-//   if (match && match.length === 2) {
-//     return match[1].toLowerCase();
-//   }
-
-//   return slugged;
-// };
 
 var emptyGithubRes = {
   name: '',
@@ -77,25 +60,29 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
   prompting: {
     askFor: function () {
       var done = this.async();
-
-      this.log(urbansay('Set up your urban apps generator, built using' + chalk.red('Yeoman')));
+      this.log(urbansay('Set up your urban apps generator, built using ' + chalk.red('Yeoman')));
 
 
       var prompts = [
         {
+          name: 'relativeRoot',
+          message: chalk.green.bold('Please type the path to your projects folder,')+
+          '\nall new projects will live inside this folder (within their policy center folders).'+
+          '\nOn a Mac, if you want to use a folder called "projects" in your home directory (i.e. where the Desktop, Download, Documents, etc folders live)'+
+          '\n you\'d type'+chalk.green.bold(' "~/projects"')+' (with no quotation marks):'
+        },
+        {
           name: 'urbanUser',
-          message: chalk.green.bold('Please enter your Urban username (first letter + full last name, not the shortened version)'),
-          default: 'someuser'
+          message: chalk.green.bold('Please enter your Urban username (first letter + full last name, not the shortened version):')
         },
         {
           name: 'githubUser',
-          message: chalk.green.bold('Please enter your GitHub username:'),
-          default: 'someuser'
+          message: chalk.green.bold('Please enter your GitHub username:')
         },
         {
           name: 'githubPassword',
-          message: chalk.green.bold('Please enter your GitHub password:'),
-          default: 'somepassword'
+          type: "password",
+          message: chalk.green.bold('Please enter your GitHub password:')
         }
       ];
 
@@ -103,7 +90,10 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
       this.prompt(prompts, function (props) {
         this.githubUser = props.githubUser;
         this.githubPassword = props.githubPassword;
-        // this.spawnCommand('grunt',['--githubUser='+this.githubUser,'--githubPassword='+this.githubPassword,'http:create_token']);
+        this.urbanUser = props.urbanUser;
+
+        var cleanRoot = execSync('echo \"' + props.relativeRoot + '\" | sed \'s/\\/\\//\\//g\'')
+        this.projectPath = execSync('dirname ' + cleanRoot + '/fake_project_dir')
         execSync('rm -rf tmp')
         execSync('mkdir tmp')
         execSync('grunt --githubUser='+this.githubUser+" --githubPassword="+this.githubPassword+" http:create_token")
@@ -111,7 +101,6 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
         execSync('grunt config')
         this.githubToken = execSync('cat tmp/token.js')
         execSync('rm -rf tmp')
-        console.log(this.githubToken)
         done();
       }.bind(this));
     },
@@ -133,20 +122,9 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
         this.realname = res.name;
         this.email = res.email;
         this.githubUrl = res.html_url;
-        // this.spawnCommand('grunt',['--githubUser='+this.githubUser,'--githubPassword='+this.githubPassword,'http:get_tokens']);
         done();
       }.bind(this), this.log);
-    // },
 }
-    // getToken: function(){
-    //   var done = this.async();
-    //   var tokens = require('../tmp/all_tokens.json')
-    //   var urbanObj = tokens.filter(function(item) {
-    //     return item.note == "urban graphics";
-    //   });
-    //   this.log(urbanObj)
-    //   done();
-    // }
 
 
   },
@@ -157,6 +135,7 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
       // console.log(c)
 
       this.template('_package.json', 'package.json');
+      this.template('_config.js', 'config.js');
       this.template('editorconfig', '.editorconfig');
       this.template('jshintrc', '.jshintrc');
       this.template('_travis.yml', '.travis.yml');
@@ -164,7 +143,6 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
     },
 
     gitfiles: function () {
-      // this.spawnCommand('git',['init']);
       this.copy('gitattributes', '.gitattributes');
       this.copy('gitignore', '.gitignore');
     },
@@ -192,8 +170,6 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
     this.installDependencies({
       skipInstall: this.options['skip-install'],
       callback: function () {
-        // execSync('grunt --githubUser='+gen.githubUser+" --githubPassword="+gen.githubPassword+" http:create_token")
-        // execSync('grunt --githubUser='+gen.githubUser+" --githubPassword="+gen.githubPassword+" http:get_tokens")
       }.bind(this),
       bower: false
     });
