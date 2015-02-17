@@ -4,7 +4,13 @@ module.exports.params = {
 	urbanUser: "<%= urbanUser %>",
 	projectPath: "<%= projectPath %>",
 	staging:{
-		port: "20022",
-		IP: "192.188.252.160"
+		port: "<%= stagingPort %>",
+		IP: "<%= stagingIP %>"
+		// port: "20022",
+		// IP: "192.188.252.160"
+	},
+	production:{
+		port: "<%= prodPort %>",
+		IP: "<%= prodIP %>"
 	}
 }

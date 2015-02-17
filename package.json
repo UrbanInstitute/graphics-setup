@@ -1,7 +1,7 @@
 {
   "name": "generator-generator",
   "version": "0.6.0",
-  "description": "Generator Generator for Yeoman",
+  "description": "Generator Generator for Yeoman, Urban Institute Fork",
   "keywords": [
     "yeoman-generator",
     "generator",
@@ -10,14 +10,14 @@
   "homepage": "https://github.com/yeoman/generator-generator",
   "bugs": "https://github.com/yeoman/generator-generator/issues",
   "author": {
-    "name": "Pascal Hartig",
-    "email": "phartig@rdrei.net",
-    "url": "http://yeoman.io"
+    "name": "Ben Chartoff",
+    "email": "bchartoff@urban.org",
+    "url": "http://www.urban.org"
   },
   "main": "app/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yeoman/generator-generator.git"
+    "url": "https://github.com/UrbanInstitute/graphics-setup"
   },
   "scripts": {
     "test": "mocha",
@@ -32,7 +32,6 @@
     "superb": "^1.0.0",
     "underscore.string": "^2.4.0",
     "yeoman-generator": "^0.18.1",
-    "yosay": "^1.0.0",
     "async": "0.9.X"
   },
   "devDependencies": {
