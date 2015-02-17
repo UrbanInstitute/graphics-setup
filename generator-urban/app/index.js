@@ -73,32 +73,32 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
         },
         {
           name: 'urbanUser',
-          message: chalk.green.bold('Please enter your Urban username (first letter + full last name, not the shortened version):')
+          message: chalk.green.bold('Please enter your Urban username (first letter + full last name, not the shortened version)')
         },
         {
           name: 'githubUser',
-          message: chalk.green.bold('Please enter your GitHub username:')
+          message: chalk.green.bold('Please enter your GitHub username')
         },
         {
           name: 'githubPassword',
           type: "password",
-          message: chalk.green.bold('Please enter your GitHub password:')
+          message: chalk.green.bold('Please enter your GitHub password')
         },
         {
           name: 'stagingIP',
-          message: chalk.green.bold('Please enter the IP address of your staging server:')
+          message: chalk.green.bold('Please enter the IP address of your staging server')
         },
         {
           name: 'stagingPort',
-          message: chalk.green.bold('Please enter the port which you will ssh to staging over:')
+          message: chalk.green.bold('Please enter the port which you will ssh to staging over')
         },
         {
           name: 'prodIP',
-          message: chalk.green.bold('Please enter the IP address of your production server:')
+          message: chalk.green.bold('Please enter the IP address of your production server')
         },
         {
           name: 'prodPort',
-          message: chalk.green.bold('Please enter the port which you will ssh to production over:')
+          message: chalk.green.bold('Please enter the port which you will ssh to production over')
         }
       ];
 
@@ -107,6 +107,10 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
         this.githubUser = props.githubUser;
         this.githubPassword = props.githubPassword;
         this.urbanUser = props.urbanUser;
+        this.stagingIP = props.stagingIP;
+        this.stagingPort = props.stagingPort;
+        this.prodIP = props.prodIP;
+        this.prodPort = props.prodPort;
 
         var cleanRoot = execSync('echo \"' + props.relativeRoot + '\" | sed \'s/\\/\\//\\//g\'')
         this.projectPath = execSync('dirname ' + cleanRoot + '/fake_project_dir')

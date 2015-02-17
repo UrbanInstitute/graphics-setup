@@ -1,89 +1,42 @@
-# generator-generator [![Build Status](https://secure.travis-ci.org/yeoman/generator-generator.svg?branch=master)](https://travis-ci.org/yeoman/generator-generator)
+#graphics-setup
 
-> Yeoman generator for Yeoman generators  
-> Scaffolds out a new basic Yeoman generator with some sensible defaults.
+`Graphics-setup` is a [yeoman](http://yeoman.io/) generator that will help folks at Urban quickly build out projects by:
+- Building out file and folder structures
+- Creating html, css, and js templates
+- Creating a new git repo for the project, and making the initial commit
+- Migrating the project to our staging server, and setting up a [git hook](http://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) to pull to staging after every push to master
 
-Maintainer: [Pascal Hartig](https://github.com/passy)
+##Initial installation
 
-![Yo dawg, I heard you like generators?](http://i.imgur.com/2gqiift.jpg)
+1. This generator is written using node.js, so to run it you'll need to install node.
 
+ You can find an [installer for node here](http://nodejs.org/download/), as well as for npm ("node package manager" which is used to install node tools such as yeoman).
 
-## Getting started
+2. Setting up node tools requires various packages. Some packages should be installed *globally*, meaning you can run them anywhere (either anywhere on the command line or from inside any program). Other packages should be installed *locally*, meaning they can only be used by a certain program, or inside a certain folder. To get graphics-setup running, you should install a few packages globally, by running the following commands:
 
-- Install: `npm install -g generator-generator`
-- Run: `yo generator`
+ **[yeoman](http://yeoman.io/) (handles the major work of the generator):**
+ ```
+ npm install -g yo
+ ```
 
-If during generation you get an error like `API rate limit exceeded`, you need to log in to GitHub
-and [create a new API token](https://github.com/settings/tokens/new), then add:
-```bash
-export GITHUB_TOKEN='YOUR_NEW_TOKEN'
-```
-to your `.bashrc`, `.zshrc`, `.profile` or another file that is run on shell initialization. In new terminal shells
-you shouldn't see this error anymore.
+ **[grunt](http://gruntjs.com/) (runs certain tasks, e.g. API calls):**
+ ```
+ npm install -g grunt-cli
+ ```
 
+ **[jshint](http://jshint.com/) (a handy tool for bug-checking javascript):**
+ ```
+ npm install jshint -g
+ ```
 
-## Commands
+ **[http-server](https://www.npmjs.com/package/http-server) (Not stricly required, but a super helpful way to view a project on [localhost](http://en.wikipedia.org/wiki/Localhost), pulling in js, css, etc. files)
+ ```
+ npm install http-server -g
+ ```
 
-* `yo generator` shows a wizard for generating a new generator
-* `yo generator:subgenerator NAME` generates a subgenerator with the name NAME
-
-
-## What do you get?
-
-Scaffolds out a complete project directory structure for you:
-
-    .
-    ├── app
-    │   ├── index.js
-    │   └── templates
-    │       ├── editorconfig
-    │       └── jshintrc
-    ├── .editorconfig
-    ├── .gitattributes
-    ├── .gitignore
-    ├── .jshintrc
-    ├── LICENSE
-    ├── package.json
-    ├── README.md
-    └── test
-        ├── test-creation.js
-        └── test-load.js
+ 3. Add an ssh key to your github account. You can find [full instructions here](https://help.github.com/articles/generating-ssh-keys/).
 
 
-## Changelog
-
-* 0.3.0
-    * Updated for generator 0.13.0.
-    * Added yo peer dependency.
-
-* 0.2.2
-    * Updated dependencies.
-
-* 0.2.1
-    * The name specified in the prompt is now used in `package.json`.
-    * `generator-generator` officially replaced the built-in generator that was
-      bundled with yo.
-
-* 0.2
-    * Added subgenerator for subgenerators
-    * Generated generator now generates package.json, component.json and
-      installs them by default.
-
-* 0.1.1
-    * Upgraded mocha to 1.9.0
-    * Include `.travis.yml`
 
 
-## Contributing
 
-See the [contribution docs](https://github.com/yeoman/yeoman/blob/master/contributing.md).
-
-When submitting an issue, please follow [the
-guidelines](https://github.com/yeoman/yeoman/blob/master/contributing.md#issue-submission).
-Especially important is to make sure Yeoman is up-to-date, and providing the
-command or commands that cause the issue.
-
-
-## License
-
-MIT © Pascal Hartig <phartig@rdrei.net> and other contributors

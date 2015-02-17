@@ -1,5 +1,5 @@
 {
-  "name": "generator-generator",
+  "name": "generator-urban",
   "version": "0.6.0",
   "description": "Generator Generator for Yeoman, Urban Institute Fork",
   "keywords": [
@@ -7,8 +7,8 @@
     "generator",
     "inception"
   ],
-  "homepage": "https://github.com/yeoman/generator-generator",
-  "bugs": "https://github.com/yeoman/generator-generator/issues",
+  "homepage": "https://github.com/UrbanInstitute/graphics-setup",
+  "bugs": "https://github.com/UrbanInstitute/graphics-setup/issues",
   "author": {
     "name": "Ben Chartoff",
     "email": "bchartoff@urban.org",
@@ -32,7 +32,8 @@
     "superb": "^1.0.0",
     "underscore.string": "^2.4.0",
     "yeoman-generator": "^0.18.1",
-    "async": "0.9.X"
+    "async": "0.9.X",
+    "exec-sync":"0.1.X"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
