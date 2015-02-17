@@ -27,22 +27,22 @@ module.exports = yeoman.generators.Base.extend({
       {
         type: 'input',
         name: 'appTitle',
-        message: chalk.green.bold('What is a short, descriptive title for the project\n (e.g. "Sunday yummy sundae: An ice cream study")\n This can change, later')
+        message: chalk.green.bold('\nWhat is a short, descriptive title for the project\n (e.g. "Sunday yummy sundae: An ice cream study")\n This can change, later')
       },
       {
         type: 'input',
         name: 'appDescription',
-        message: chalk.green.bold('What is a one sentence project description,\n (e.g. "A longitudinal analysis of ice cream habits revealed an uptick in toppings per ounce on Saturdays and Sundays")\n This can change, later')
+        message: chalk.green.bold('\nWhat is a one sentence project description,\n (e.g. "A longitudinal analysis of ice cream habits revealed an uptick in toppings per ounce on Saturdays and Sundays")\n This can change, later')
       },
       {
         type: 'confirm',
         name: 'isPolicyCenter',
-        message: chalk.green.bold('Is this project under a Policy Center?')
+        message: chalk.green.bold('\nIs this project under a Policy Center?')
       },
       {
         type: 'list',
         name: 'policyCenter',
-        message: chalk.green.bold('Which Policy Center?'),
+        message: chalk.green.bold('\nWhich Policy Center?'),
         choices: [
           "Health Policy Center (HPC)",
           "Housing Finance Policy Center (HFPC)",
@@ -62,7 +62,7 @@ module.exports = yeoman.generators.Base.extend({
       {
         type: 'confirm',
         name: 'isCrossCenter',
-        message: chalk.green.bold('Is this project under a Cross Center Initiative?'),
+        message: chalk.green.bold('\nIs this project under a Cross Center Initiative?'),
         when: function(answers){
           return !isParent('isPolicyCenter')(answers)
         }
@@ -70,7 +70,7 @@ module.exports = yeoman.generators.Base.extend({
       {
         type: 'list',
         name: 'crossCenter',
-        message: chalk.green.bold('Which Cross Center Initiative?'),
+        message: chalk.green.bold('\nWhich Cross Center Initiative?'),
         choices: [
           "Kids in Context",
           "Low-Income Working Families",
@@ -88,13 +88,23 @@ module.exports = yeoman.generators.Base.extend({
       {
         type: 'list',
         name: 'privacy',
-        message: chalk.green.bold('Should this project be public or private?:'),
+        message: chalk.green.bold('\nShould this project be public or private?:'),
         choices: [
           "Public",
           "Private"
         ],
         default: "Public"
-      }
+      },
+      {
+        type: "confirm",
+        name: "includeCustomGoogleAnalytics",
+        message: chalk.green.bold("Will this project use custom google analytics events?")
+      },
+      {
+        type: "confirm",
+        name: "includeD3",
+        message: chalk.green.bold("Will this project use d3.js?")
+      },
     ];
 
     function slugify(choice){
@@ -157,6 +167,27 @@ module.exports = yeoman.generators.Base.extend({
       this.googleAnalyticsID = config.params.googleAnalyticsID
       this.privacy = props.privacy;
       this.githubOrg = githubOrg(props.privacy)
+
+      this.includeCustomGoogleAnalytics = props.includeCustomGoogleAnalytics;
+      if(props.includeCustomGoogleAnalytics){
+        this.customGoogleAnalyticsTag = '\n<script src=\"js/vendor/urban-analytics.min.js\"></script>'+
+          '\n<script type=\"text/javascript\">'+
+          '\n\t// custom analytics functions go here, see https://github.com/UrbanInstitute/custom-analytics'+
+          '\n\t// for examples'+
+          '\n</script>'
+      }
+      else{
+        this.customGoogleAnalyticsTag = ""
+      }
+
+      this.includeD3 = props.includeD3;
+      if(props.includeD3){
+        this.d3Tag = '\n<script src = \"https://raw.githubusercontent.com/mbostock/d3/master/d3.min.js\"></script>'
+      }
+      else{
+        this.d3Tag = ""
+      }
+
       done();
     }.bind(this));
   },
@@ -164,14 +195,26 @@ module.exports = yeoman.generators.Base.extend({
   writing: {
     app: function () {
       this.destinationRoot(config.params.projectPath + "/" + this.parentEntity + this.projectName);
-      // this.fs.copy(
-      //   this.templatePath('_index.html'),
-      //   this.destinationPath('index.html')
-      // );
       this.template('_index.html','index.html')
+      if(this.includeCustomGoogleAnalytics){
+        this.fs.copy(
+          this.templatePath('js/vendor/urban-analytics.min.js'),
+          this.destinationPath('js/vendor/urban-analytics.min.js')
+        );
+      }
+      if(this.includeD3){
+        this.fs.copy(
+          this.templatePath('js/vendor/d3.min.js'),
+          this.destinationPath('js/vendor/d3.min.js')
+        );
+      }
       this.fs.copy(
         this.templatePath('css/_main.css'),
         this.destinationPath('css/main.css')
+      );
+      this.fs.copy(
+        this.templatePath('css/bootstrap.min.css'),
+        this.destinationPath('css/bootstrap.min.css')
       );
       this.fs.copy(
         this.templatePath('_package.json'),
@@ -181,6 +224,11 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('_bower.json'),
         this.destinationPath('bower.json')
       );
+      this.fs.copy(
+        this.templatePath('img/logo-01.png'),
+        this.destinationPath('img/logo-01.png')
+      );
+
     },
 
     projectfiles: function () {

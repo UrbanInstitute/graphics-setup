@@ -170,11 +170,11 @@ module.exports = yeoman.generators.Base.extend({
 
       this.includeCustomGoogleAnalytics = props.includeCustomGoogleAnalytics;
       if(props.includeCustomGoogleAnalytics){
-        this.customGoogleAnalyticsTag = '\n<script src=\"js/vendor/urban-analytics.min.js\"></script>'+
-          '\n<script type=\"text/javascript\">'+
-          '\n\t// custom analytics functions go here, see https://github.com/UrbanInstitute/custom-analytics'+
-          '\n\t// for examples'+
-          '\n</script>'
+        this.customGoogleAnalyticsTag = '\n\t\t<script src=\"js/vendor/urban-analytics.min.js\"></script>'+
+          '\n\t\t<script type=\"text/javascript\">'+
+          '\n\t\t\t// custom analytics functions go here, see https://github.com/UrbanInstitute/custom-analytics'+
+          '\n\t\t\t// for examples'+
+          '\n\t\t</script>'
       }
       else{
         this.customGoogleAnalyticsTag = ""
@@ -182,7 +182,7 @@ module.exports = yeoman.generators.Base.extend({
 
       this.includeD3 = props.includeD3;
       if(props.includeD3){
-        this.d3Tag = '\n<script src = \"https://raw.githubusercontent.com/mbostock/d3/master/d3.min.js\"></script>'
+        this.d3Tag = '\n\t\t<script src = \"https://raw.githubusercontent.com/mbostock/d3/master/d3.min.js\"></script>'
       }
       else{
         this.d3Tag = ""
@@ -198,13 +198,13 @@ module.exports = yeoman.generators.Base.extend({
       this.template('_index.html','index.html')
       if(this.includeCustomGoogleAnalytics){
         this.fs.copy(
-          this.templatePath('js/vendor/urban-analytics.min.js')
+          this.templatePath('js/vendor/urban-analytics.min.js'),
           this.destinationPath('js/vendor/urban-analytics.min.js')
         );
       }
       if(this.includeD3){
         this.fs.copy(
-          this.templatePath('js/vendor/d3.min.js')
+          this.templatePath('js/vendor/d3.min.js'),
           this.destinationPath('js/vendor/d3.min.js')
         );
       }
