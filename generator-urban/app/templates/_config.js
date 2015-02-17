@@ -3,6 +3,8 @@ module.exports.params = {
 	githubUser: "<%= githubUser %>",
 	urbanUser: "<%= urbanUser %>",
 	projectPath: "<%= projectPath %>",
+	googleAnalyticsID: "<%= googleAnalyticsID %>",
+	
 	staging:{
 		port: "<%= stagingPort %>",
 		IP: "<%= stagingIP %>"

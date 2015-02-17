@@ -66,10 +66,10 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
       var prompts = [
         {
           name: 'relativeRoot',
-          message: chalk.green.bold('Please type the path to your projects folder,')+
+          message: chalk.green.bold('Please type the path to your projects folder,'+
           '\nall new projects will live inside this folder (within their policy center folders).'+
           '\nOn a Mac, if you want to use a folder called "projects" in your home directory (i.e. where the Desktop, Download, Documents, etc folders live)'+
-          '\n you\'d type'+chalk.green.bold(' "~/projects"')+' (with no quotation marks):'
+          '\n you\'d type "~/projects" (with no quotation marks)')
         },
         {
           name: 'urbanUser',
@@ -99,6 +99,11 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
         {
           name: 'prodPort',
           message: chalk.green.bold('Please enter the port which you will ssh to production over')
+        },
+        {
+          name: 'googleAnalyticsID',
+          message: chalk.green.bold('Please enter the google analytics ID (or hit enter for the default)'),
+          default: "UA-57529944-1"
         }
       ];
 
@@ -111,6 +116,7 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
         this.stagingPort = props.stagingPort;
         this.prodIP = props.prodIP;
         this.prodPort = props.prodPort;
+        this.googleAnalyticsID = props.googleAnalyticsID
 
         var cleanRoot = execSync('echo \"' + props.relativeRoot + '\" | sed \'s/\\/\\//\\//g\'')
         this.projectPath = execSync('dirname ' + cleanRoot + '/fake_project_dir')
@@ -151,11 +157,9 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
 
   writing: {
     projectfiles: function () {
-
-      // console.log(c)
-
-      this.template('_package.json', 'package.json');
       this.template('_config.js', 'config.js');
+      this.template('_bower.json', 'bower.json');
+      this.template('_package.json', 'package.json');
       this.template('editorconfig', '.editorconfig');
       this.template('jshintrc', '.jshintrc');
       this.template('_travis.yml', '.travis.yml');
@@ -177,6 +181,10 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
       this.copy('jshintrc', 'app/templates/jshintrc');
       this.copy('app/templates/_package.json', 'app/templates/_package.json');
       this.copy('app/templates/_bower.json', 'app/templates/_bower.json');
+      this.copy('app/templates/_index.html', 'app/templates/_index.html');
+      this.copy('app/templates/css/_main.css', 'app/templates/css/_main.css');
+      this.copy('app/templates/js/_main.js', 'app/templates/js/_main.js');
+
     },
 
     tests: function () {

@@ -22,7 +22,17 @@ module.exports = yeoman.generators.Base.extend({
       {
         type: 'input',
         name: 'projectName',
-        message: chalk.green.bold('What is the name of this project')+chalk.red.bold(' (no spaces or periods please)')+chalk.green.bold('?\n This name will be used as the github repo name, as well as the folder name on staging and production servers:')
+        message: chalk.green.bold('What is the name of this project')+chalk.red.bold(' (no spaces or periods please)')+chalk.green.bold('?\n This name will be used as the github repo name, as well as the folder name on staging and production servers')
+      },
+      {
+        type: 'input',
+        name: 'appTitle',
+        message: chalk.green.bold('What is a short, descriptive title for the project\n (e.g. "Sunday yummy sundae: An ice cream study")\n This can change, later')
+      },
+      {
+        type: 'input',
+        name: 'appDescription',
+        message: chalk.green.bold('What is a one sentence project description,\n (e.g. "A longitudinal analysis of ice cream habits revealed an uptick in toppings per ounce on Saturdays and Sundays")\n This can change, later')
       },
       {
         type: 'confirm',
@@ -142,6 +152,9 @@ module.exports = yeoman.generators.Base.extend({
         throw new Error(chalk.red.bold("That project name already exists"))
       }
 
+      this.appTitle = props.appTitle;
+      this.appDescription = props.appDescription;
+      this.googleAnalyticsID = config.params.googleAnalyticsID
       this.privacy = props.privacy;
       this.githubOrg = githubOrg(props.privacy)
       done();
@@ -151,6 +164,15 @@ module.exports = yeoman.generators.Base.extend({
   writing: {
     app: function () {
       this.destinationRoot(config.params.projectPath + "/" + this.parentEntity + this.projectName);
+      // this.fs.copy(
+      //   this.templatePath('_index.html'),
+      //   this.destinationPath('index.html')
+      // );
+      this.template('_index.html','index.html')
+      this.fs.copy(
+        this.templatePath('css/_main.css'),
+        this.destinationPath('css/main.css')
+      );
       this.fs.copy(
         this.templatePath('_package.json'),
         this.destinationPath('package.json')
@@ -191,18 +213,16 @@ module.exports = yeoman.generators.Base.extend({
     this.installDependencies({
       skipInstall: this.options['skip-install'],
       callback: function () {
-        execSync('cd '+path)
-        execSync('git init')
-        execSync('git add package.json')
-        execSync('git commit -m "initial commit"')
-        execSync('curl -s -H \'Authorization: token '+ token +'\' -d \'{"name":"' + projectName + '"}\' https://api.github.com/orgs/' + org + '/repos')
-        execSync('git remote add origin git@github.com:' + org + '/' + projectName + '.git')
-        // generator.spawnCommand('git', ['push', '-u', 'origin', 'master'])
-        exceSync('git push -u --quiet origin master')
+        // execSync('cd '+path)
+        // execSync('git init')
+        // execSync('git add package.json')
+        // execSync('git commit -m "initial commit"')
+        // execSync('curl -s -H \'Authorization: token '+ token +'\' -d \'{"name":"' + projectName + '"}\' https://api.github.com/orgs/' + org + '/repos')
+        // execSync('git remote add origin git@github.com:' + org + '/' + projectName + '.git')
+        // execSync('git push -u --quiet origin master')
 
-
-        //scp to staging
-        execSync('scp -rp ' + projectPath + "/" + parentEntity + projectName + ' -P ' + stagingPort + ' ' + urbanUser + '@' + stagingIP + '/var/www/apps.urban.org/')
+        // //scp to staging
+        // execSync('scp -rp ' + projectPath + "/" + parentEntity + projectName + ' -P ' + stagingPort + ' ' + urbanUser + '@' + stagingIP + '/var/www/apps.urban.org/')
       }.bind(this),
     });
   }
