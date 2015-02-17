@@ -164,10 +164,11 @@ module.exports = yeoman.generators.Base.extend({
   writing: {
     app: function () {
       this.destinationRoot(config.params.projectPath + "/" + this.parentEntity + this.projectName);
-      this.fs.copy(
-        this.templatePath('_index.html'),
-        this.destinationPath('index.html')
-      );
+      // this.fs.copy(
+      //   this.templatePath('_index.html'),
+      //   this.destinationPath('index.html')
+      // );
+      this.template('_index.html','index.html')
       this.fs.copy(
         this.templatePath('css/_main.css'),
         this.destinationPath('css/main.css')

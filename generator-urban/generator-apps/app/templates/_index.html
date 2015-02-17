@@ -62,11 +62,7 @@
 
     </head>
     <body>
-        <script>
-            if (document.location.href.indexOf('template=iframe') !== -1) {
-                $('body').not(".main-content").hide();
-            }
-        </script>
+
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -77,7 +73,9 @@
 <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 <!-- !!!!!!!!!!! MAIN CONTENT STARTS HERE !!!!!!!!!!! -->
 <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-        test test test
+
+
+        <p>test test test</p>
         <div class = "main-content">
             <p>Hello world! This is HTML5 Boilerplate.</p>
         </div>
@@ -93,7 +91,11 @@
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
 
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            if (document.location.href.indexOf('template=iframe') !== -1) {
+                $('body > :not(.main-content)').hide();
+            }
+        </script>
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

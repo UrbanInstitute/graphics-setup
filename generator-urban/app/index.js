@@ -73,36 +73,36 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
         },
         {
           name: 'urbanUser',
-          message: chalk.green.bold('Please enter your Urban username (first letter + full last name, not the shortened version)')
+          message: chalk.green.bold('\nPlease enter your Urban username (first letter + full last name, not the shortened version)')
         },
         {
           name: 'githubUser',
-          message: chalk.green.bold('Please enter your GitHub username')
+          message: chalk.green.bold('\nPlease enter your GitHub username')
         },
         {
           name: 'githubPassword',
           type: "password",
-          message: chalk.green.bold('Please enter your GitHub password')
+          message: chalk.green.bold('\nPlease enter your GitHub password')
         },
         {
           name: 'stagingIP',
-          message: chalk.green.bold('Please enter the IP address of your staging server')
+          message: chalk.green.bold('\nPlease enter the IP address of your staging server')
         },
         {
           name: 'stagingPort',
-          message: chalk.green.bold('Please enter the port which you will ssh to staging over')
+          message: chalk.green.bold('\nPlease enter the port which you will ssh to staging over')
         },
         {
           name: 'prodIP',
-          message: chalk.green.bold('Please enter the IP address of your production server')
+          message: chalk.green.bold('\nPlease enter the IP address of your production server')
         },
         {
           name: 'prodPort',
-          message: chalk.green.bold('Please enter the port which you will ssh to production over')
+          message: chalk.green.bold('\nPlease enter the port which you will ssh to production over')
         },
         {
           name: 'googleAnalyticsID',
-          message: chalk.green.bold('Please enter the google analytics ID (or hit enter for the default)'),
+          message: chalk.green.bold('\nPlease enter the google analytics ID (or hit enter for the default)'),
           default: "UA-57529944-1"
         }
       ];
