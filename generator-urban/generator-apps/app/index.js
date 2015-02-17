@@ -197,7 +197,9 @@ module.exports = yeoman.generators.Base.extend({
         execSync('git commit -m "initial commit"')
         execSync('curl -s -H \'Authorization: token '+ token +'\' -d \'{"name":"' + projectName + '"}\' https://api.github.com/orgs/' + org + '/repos')
         execSync('git remote add origin git@github.com:' + org + '/' + projectName + '.git')
-        generator.spawnCommand('git', ['push', '-u', 'origin', 'master'])
+        // generator.spawnCommand('git', ['push', '-u', 'origin', 'master'])
+        exceSync('git push -u --quiet origin master')
+
 
         //scp to staging
         execSync('scp -rp ' + projectPath + "/" + parentEntity + projectName + ' -P ' + stagingPort + ' ' + urbanUser + '@' + stagingIP + '/var/www/apps.urban.org/')
