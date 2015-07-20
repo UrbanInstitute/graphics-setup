@@ -14,12 +14,14 @@ done
 ```
 (staging is now on whatever branch got pushed)
 
-chmod +x hooks/post-receive
+`chmod +x hooks/post-receive`
 
 ON LOCAL
-git remote set-url --add --push origin staging@path/to/proj_dir/.git
-git remote set-url --add --push origin git@github.com:UrbanInstitute/housing-burden-calculator.git
-git remote set-url --add --push origin prodpath
+```
+ git remote set-url --add --push origin staging@path/to/proj_dir/.git
+ git remote set-url --add --push origin git@github.com:UrbanInstitute/housing-burden-calculator.git
+ git remote set-url --add --push origin prodpath
+```
 
 
 ON PROD
