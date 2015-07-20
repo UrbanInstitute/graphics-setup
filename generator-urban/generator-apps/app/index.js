@@ -5,6 +5,7 @@ var urbansay = require('urbansay');
 var config = require('../config.js')
 var fs = require('fs')
 var execSync = require('exec-sync');
+var stagingRootPath = '/var/www/apps.urban.org/'
 
 module.exports = yeoman.generators.Base.extend({
   initializing: function () {
@@ -167,14 +168,15 @@ module.exports = yeoman.generators.Base.extend({
       this.googleAnalyticsID = config.params.googleAnalyticsID
       this.privacy = props.privacy;
       this.githubOrg = githubOrg(props.privacy)
+      this.fullStagingPath = stagingRootPath + this.parentEntity + this.projectName
 
       this.includeCustomGoogleAnalytics = props.includeCustomGoogleAnalytics;
       if(props.includeCustomGoogleAnalytics){
-        this.customGoogleAnalyticsTag = '\n<script src=\"js/vendor/urban-analytics.min.js\"></script>'+
-          '\n<script type=\"text/javascript\">'+
-          '\n\t// custom analytics functions go here, see https://github.com/UrbanInstitute/custom-analytics'+
-          '\n\t// for examples'+
-          '\n</script>'
+        this.customGoogleAnalyticsTag = '\n\t\t<script src=\"js/vendor/urban-analytics.min.js\"></script>'+
+          '\n\t\t<script type=\"text/javascript\">'+
+          '\n\t\t\t// custom analytics functions go here, see https://github.com/UrbanInstitute/custom-analytics'+
+          '\n\t\t\t// for examples'+
+          '\n\t\t</script>'
       }
       else{
         this.customGoogleAnalyticsTag = ""
@@ -182,7 +184,7 @@ module.exports = yeoman.generators.Base.extend({
 
       this.includeD3 = props.includeD3;
       if(props.includeD3){
-        this.d3Tag = '\n<script src = \"https://raw.githubusercontent.com/mbostock/d3/master/d3.min.js\"></script>'
+        this.d3Tag = '\n\t\t<script src = \"https://raw.githubusercontent.com/mbostock/d3/master/d3.min.js\"></script>'
       }
       else{
         this.d3Tag = ""
@@ -196,6 +198,8 @@ module.exports = yeoman.generators.Base.extend({
     app: function () {
       this.destinationRoot(config.params.projectPath + "/" + this.parentEntity + this.projectName);
       this.template('_index.html','index.html')
+      this.template('server/git_hooks/_post-receive','post-receive')
+
       if(this.includeCustomGoogleAnalytics){
         this.fs.copy(
           this.templatePath('js/vendor/urban-analytics.min.js'),
@@ -228,7 +232,6 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('img/logo-01.png'),
         this.destinationPath('img/logo-01.png')
       );
-
     },
 
     projectfiles: function () {
@@ -250,6 +253,7 @@ module.exports = yeoman.generators.Base.extend({
     var projectPath = config.params.projectPath
     var projectName = this.projectName;
     var parentEntity = this.parentEntity
+    var fullStagingPath = "/var/www/apps.urban.org/" + parentEntity + projectName
 
     var urbanUser = config.params.urbanUser
     
@@ -261,13 +265,41 @@ module.exports = yeoman.generators.Base.extend({
     this.installDependencies({
       skipInstall: this.options['skip-install'],
       callback: function () {
-        // execSync('cd '+path)
-        // execSync('git init')
-        // execSync('git add package.json')
-        // execSync('git commit -m "initial commit"')
+        //Set up bare repo on staging:
+        // execSync('ssh -t -t -p ' + stagingPort + ' ' + urbanUser + '@' + stagingIP)
+        // execSync('cd /var/www/apps.urban.org/')
+        // execSync('mkdir -p ' + fullStagingPath)
+        // execSync('cd ' + projectPath + "/" + parentEntity + projectName)
+        execSync('mkdir -p stagingTemp/' + projectName + '/.git')
+        execSync('git init --bare stagingTemp/' + projectName + '/.git')
+        execSync('mv post-receive stagingTemp/' + projectName + '/.git/hooks/post-receive')
+
+        // execSync('cd hooks')
+        // execSync('touch stagingTemp/' + projectName + '/.git/hooks/post-receive')
+        // execSync('printf "while read oldrev newrev refname\ndo\n\tbranch=$" >> stagingTemp/' + projectName + '/.git/hooks/post-receive ; echo ""')
+        // execSync('printf  "(git rev-parse --symbolic --abbrev-ref $" >> stagingTemp/' + projectName + '/.git/hooks/post-receive ; echo ""')
+        // execSync('printf "refname)\n\tGIT_WORK_TREE=' + fullStagingPath + ' git checkout $" >> stagingTemp/' + projectName + '/.git/hooks/post-receive ; echo ""')
+        // execSync('printf "branch -f\ndone" >> stagingTemp/' + projectName + '/.git/hooks/post-receive ; echo ""')
+        //yuck, need to end in empty echo bc of this issue https://github.com/jeremyfa/node-exec-sync/issues/15
+        // execSync('echo "while read oldrev newrev refname\ndo\n\tbranch=' + '$' + '(git rev-parse --symbolic --abbrev-ref ' + '\'$\'' + 'refname)\n\tGIT_WORK_TREE=' + fullStagingPath + ' git checkout \$branch -f\ndone" >> stagingTemp/' + projectName + '/.git/hooks/post-receive ; echo ""')
+        execSync('chmod +x stagingTemp/' + projectName + '/.git/hooks/post-receive')
+        // execSync('cd ../../..')
+        execSync('scp -rp -P ' + stagingPort + ' stagingTemp/' + projectName + ' ' + urbanUser + '@' + stagingIP + ":/var/www/apps.urban.org/" + parentEntity)
+
+
+        execSync('cd '+path)
+        execSync('git init')
+        execSync('git add package.json')
+        execSync('git commit -m "initial commit"')
         // execSync('curl -s -H \'Authorization: token '+ token +'\' -d \'{"name":"' + projectName + '"}\' https://api.github.com/orgs/' + org + '/repos')
-        // execSync('git remote add origin git@github.com:' + org + '/' + projectName + '.git')
+
+        // set remotes to github, staging, and prod
+        execSync('git remote add origin ssh://' + urbanUser + '@' + stagingIP + ':' + stagingPort + fullStagingPath + '/.git')
+        // execSync('git remote set-url --add --push origin ssh://' + urbanUser + '@' + stagingIP + ':' + stagingPort + fullStagingPath)
+        // execSync('git remote set-url --add --push origin git@github.com:' + org + '/' + projectName + '.git')
         // execSync('git push -u --quiet origin master')
+
+         // execSync('ssh://' + urbanUser + '@' + stagingIP + ':' + stagingPort + fullStagingPath + '/.git')
 
         // //scp to staging
         // execSync('scp -rp ' + projectPath + "/" + parentEntity + projectName + ' -P ' + stagingPort + ' ' + urbanUser + '@' + stagingIP + '/var/www/apps.urban.org/')

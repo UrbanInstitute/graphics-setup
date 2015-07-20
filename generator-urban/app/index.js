@@ -69,36 +69,44 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
           message: chalk.green.bold('Please type the path to your projects folder,'+
           '\nall new projects will live inside this folder (within their policy center folders).'+
           '\nOn a Mac, if you want to use a folder called "projects" in your home directory (i.e. where the Desktop, Download, Documents, etc folders live)'+
-          '\n you\'d type "~/projects" (with no quotation marks)')
+          '\n you\'d type "~/projects" (with no quotation marks)'),
+          default: '~/projects'
         },
         {
           name: 'urbanUser',
-          message: chalk.green.bold('\nPlease enter your Urban username (first letter + full last name, not the shortened version)')
+          message: chalk.green.bold('\nPlease enter your Urban username (first letter + full last name, not the shortened version)'),
+          default: 'bchartoff'
         },
         {
           name: 'githubUser',
-          message: chalk.green.bold('\nPlease enter your GitHub username')
+          message: chalk.green.bold('\nPlease enter your GitHub username'),
+          default: 'bchartoff'
         },
         {
           name: 'githubPassword',
-          type: "password",
-          message: chalk.green.bold('\nPlease enter your GitHub password')
+          type: 'password',
+          message: chalk.green.bold('\nPlease enter your GitHub password'),
+          default: 'kiah1982'
         },
         {
           name: 'stagingIP',
-          message: chalk.green.bold('\nPlease enter the IP address of your staging server')
+          message: chalk.green.bold('\nPlease enter the IP address of your staging server'),
+          default: '192.188.252.160'
         },
         {
           name: 'stagingPort',
-          message: chalk.green.bold('\nPlease enter the port which you will ssh to staging over')
+          message: chalk.green.bold('\nPlease enter the port which you will ssh to staging over'),
+          default: '20022'
         },
         {
           name: 'prodIP',
-          message: chalk.green.bold('\nPlease enter the IP address of your production server')
+          message: chalk.green.bold('\nPlease enter the IP address of your production server'),
+          default: '1'
         },
         {
           name: 'prodPort',
-          message: chalk.green.bold('\nPlease enter the port which you will ssh to production over')
+          message: chalk.green.bold('\nPlease enter the port which you will ssh to production over'),
+          default: '1'
         },
         {
           name: 'googleAnalyticsID',
@@ -184,7 +192,7 @@ var GeneratorGenerator = module.exports = yeoman.generators.Base.extend({
       this.copy('app/templates/_index.html', 'app/templates/_index.html');
       this.copy('app/templates/css/_main.css', 'app/templates/css/_main.css');
       this.copy('app/templates/js/_main.js', 'app/templates/js/_main.js');
-
+      this.copy('app/templates/server/git_hooks/_post-receive', 'app/templates/server/git_hooks/_post-receive');
     },
 
     tests: function () {

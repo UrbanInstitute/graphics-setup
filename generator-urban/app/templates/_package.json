@@ -1,5 +1,6 @@
 {
-  "name": "package",
-  "version": "0.0.0",
+  "name": "generator-apps",
+  "version": "0.0.1",
+  "description": "Urban Institute app generator",
   "dependencies": {}
 }

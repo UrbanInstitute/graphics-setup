@@ -5,6 +5,8 @@ var urbansay = require('urbansay');
 var config = require('../config.js')
 var fs = require('fs')
 var execSync = require('exec-sync');
+var stagingRootPath = '/var/www/apps.urban.org/'
+var assetsRoot = "http://apps-staging.urban.org/assets/"
 
 module.exports = yeoman.generators.Base.extend({
   initializing: function () {
@@ -37,7 +39,7 @@ module.exports = yeoman.generators.Base.extend({
       {
         type: 'confirm',
         name: 'isPolicyCenter',
-        message: chalk.green.bold('\nIs this project under a Policy Center?')
+        message: chalk.green.bold('\nIs this project under a Policy Center (you have the option to include it either under a policy center, a cross center initiative, or a research area)?')
       },
       {
         type: 'list',
@@ -86,6 +88,46 @@ module.exports = yeoman.generators.Base.extend({
         when: isParent('isCrossCenter')
       },
       {
+        type: 'confirm',
+        name: 'isResearch',
+        message: chalk.green.bold('\nIs this project under a research area?'),
+        when: function(answers){
+          return !isParent('isCrossCenter')(answers)
+        }
+      },
+      {
+        type: 'list',
+        name: 'research',
+        message: chalk.green.bold('\nWhich research area?'),
+        choices: [
+					"Adolescents and Youth",
+					"Aging",
+					"Children",
+					"Crime and Justice",
+					"Economic Growth and Productivity",
+					"Education and Training",
+					"Families",
+					"Finance",
+					"Health and Health Policy",
+					"Housing and Housing Finance",
+					"Immigrants and Immigration",
+					"Income and Wealth",
+					"International Development",
+					"Job Market and Labor Force",
+					"Neighborhoods, Cities, and Metros",
+					"Nonprofits and Philanthropy",
+					"Poverty, Vulnerability, and the Safety Net",
+					"Race, Ethnicity, and Gender",
+          "Taxes and Budget"
+        ],
+        when: isParent('isResearch')
+      },
+      {
+        type: 'confirm',
+        name: 'isFeature',
+        message: chalk.green.bold('\nThe project url will be apps.urban.org/features/' + answers.projectName + '. Is this ok? (Saying \"No\" will cancel this generator and you can start over)'),
+      },
+      {
         type: 'list',
         name: 'privacy',
         message: chalk.green.bold('\nShould this project be public or private?:'),
@@ -109,6 +151,7 @@ module.exports = yeoman.generators.Base.extend({
 
     function slugify(choice){
         var slugs ={
+          "feature": "features/"
           "Health Policy Center (HPC)": "policy-centers/health-policy-center/",
           "Housing Finance Policy Center (HFPC)": "policy-centers/housing-finance-policy-center/",
           "Income and Benefits Policy Center (IBP)": "policy-centers/income-and-benefits-policy-center/",
@@ -128,7 +171,26 @@ module.exports = yeoman.generators.Base.extend({
           "Social Determinants of Health": "policy-centers/cross-center-initiatives/social-determinants-health/",
           "State and Local Finance Initiative": "policy-centers/cross-center-initiatives/state-and-local-finance-initiative/",
           "Tax Policy and Charities": "policy-centers/cross-center-initiatives/tax-policy-and-charities/",
-          "Washington, DC, Research Initiative": "policy-centers/cross-center-initiatives/washington-dc-research-initiative/"
+          "Washington, DC, Research Initiative": "policy-centers/cross-center-initiatives/washington-dc-research-initiative/",
+          "Adolescents and Youth": "research-area/adolescents-and-youth/",
+          "Aging": "research-area/aging/",
+          "Children": "research-area/children/",
+          "Crime and Justice": "research-area/crime-and-justice/",
+          "Economic Growth and Productivity": "research-area/economic-growth-and-productivity/",
+          "Education and Training": "research-area/education-and-training/",
+          "Families": "research-area/families/",
+          "Finance": "research-area/finance/",
+          "Health and Health Policy": "research-area/health-and-health-policy/",
+          "Housing and Housing Finance": "research-area/housing-and-housing-finance/",
+          "Immigrants and Immigration": "research-area/immigrants-and-immigration/",
+          "Income and Wealth": "research-area/income-and-wealth/",
+          "International Development": "research-area/international-development/",
+          "Job Market and Labor Force": "research-area/job-market-and-labor-force/",
+          "Neighborhoods, Cities, and Metros": "research-area/neighborhoods-cities-and-metros/",
+          "Nonprofits and Philanthropy": "research-area/nonprofits-and-philanthropy/",
+          "Poverty, Vulnerability, and the Safety Net": "research-area/poverty-vulnerability-and-safety-net/",
+          "Race, Ethnicity, and Gender": "research-area/race-ethnicity-and-gender/",
+          "Taxes and Budget": "research-area/taxes-and-budget/"
         }
         return slugs[choice];
     }
@@ -146,14 +208,20 @@ module.exports = yeoman.generators.Base.extend({
       }
     }
     this.prompt(prompts, function (props) {
-      if(typeof props.policyCenter === "undefined" && typeof props.crossCenter !== "undefined"){
+      if(typeof props.crossCenter !== "undefined"){
         this.parentEntity = slugify(props.crossCenter);
       }
-      else if(typeof props.policyCenter !== "undefined" && typeof props.crossCenter == "undefined"){
+      else if(typeof props.policyCenter !== "undefined"){
         this.parentEntity = slugify(props.policyCenter);
       }
+      else if(typeof props.research !== "undefined"){
+        this.parentEntity = slugify(props.research);
+      }
+      else if(props.isFeature){
+        this.parentEntity = slugify("feature")
+      }
       else{
-       throw new Error(chalk.red.bold("The project must exist under either a Policy Center or a Cross Center Initiative"))
+       throw new Error(chalk.red.bold("Cancelling the generator..."))
       }
       this.projectName = props.projectName;
 
@@ -167,10 +235,11 @@ module.exports = yeoman.generators.Base.extend({
       this.googleAnalyticsID = config.params.googleAnalyticsID
       this.privacy = props.privacy;
       this.githubOrg = githubOrg(props.privacy)
+      this.fullStagingPath = stagingRootPath + this.parentEntity + this.projectName
 
       this.includeCustomGoogleAnalytics = props.includeCustomGoogleAnalytics;
       if(props.includeCustomGoogleAnalytics){
-        this.customGoogleAnalyticsTag = '\n\t\t<script src=\"js/vendor/urban-analytics.min.js\"></script>'+
+        this.customGoogleAnalyticsTag = '\n\t\t<script src=\"' + assetsRoot + 'js/urban/custom-analytics/urban-analytics.min.js\"></script>'+
           '\n\t\t<script type=\"text/javascript\">'+
           '\n\t\t\t// custom analytics functions go here, see https://github.com/UrbanInstitute/custom-analytics'+
           '\n\t\t\t// for examples'+
@@ -182,7 +251,7 @@ module.exports = yeoman.generators.Base.extend({
 
       this.includeD3 = props.includeD3;
       if(props.includeD3){
-        this.d3Tag = '\n\t\t<script src = \"https://raw.githubusercontent.com/mbostock/d3/master/d3.min.js\"></script>'
+        this.d3Tag = '\n\t\t<script src = \"' + assetsRoot + 'js/vendor/d3/d3.min.js\"></script>'
       }
       else{
         this.d3Tag = ""
@@ -196,18 +265,20 @@ module.exports = yeoman.generators.Base.extend({
     app: function () {
       this.destinationRoot(config.params.projectPath + "/" + this.parentEntity + this.projectName);
       this.template('_index.html','index.html')
-      if(this.includeCustomGoogleAnalytics){
-        this.fs.copy(
-          this.templatePath('js/vendor/urban-analytics.min.js'),
-          this.destinationPath('js/vendor/urban-analytics.min.js')
-        );
-      }
-      if(this.includeD3){
-        this.fs.copy(
-          this.templatePath('js/vendor/d3.min.js'),
-          this.destinationPath('js/vendor/d3.min.js')
-        );
-      }
+      this.template('server/git_hooks/_post-receive','post-receive')
+
+      // if(this.includeCustomGoogleAnalytics){
+      //   this.fs.copy(
+      //     this.templatePath('js/vendor/urban-analytics.min.js'),
+      //     this.destinationPath('js/vendor/urban-analytics.min.js')
+      //   );
+      // }
+      // if(this.includeD3){
+      //   this.fs.copy(
+      //     this.templatePath('js/vendor/d3.min.js'),
+      //     this.destinationPath('js/vendor/d3.min.js')
+      //   );
+      // }
       this.fs.copy(
         this.templatePath('css/_main.css'),
         this.destinationPath('css/main.css')
@@ -228,7 +299,6 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('img/logo-01.png'),
         this.destinationPath('img/logo-01.png')
       );
-
     },
 
     projectfiles: function () {
@@ -250,6 +320,7 @@ module.exports = yeoman.generators.Base.extend({
     var projectPath = config.params.projectPath
     var projectName = this.projectName;
     var parentEntity = this.parentEntity
+    var fullStagingPath = "/var/www/apps.urban.org/" + parentEntity + projectName
 
     var urbanUser = config.params.urbanUser
     
@@ -261,16 +332,29 @@ module.exports = yeoman.generators.Base.extend({
     this.installDependencies({
       skipInstall: this.options['skip-install'],
       callback: function () {
-        // execSync('cd '+path)
-        // execSync('git init')
-        // execSync('git add package.json')
-        // execSync('git commit -m "initial commit"')
-        // execSync('curl -s -H \'Authorization: token '+ token +'\' -d \'{"name":"' + projectName + '"}\' https://api.github.com/orgs/' + org + '/repos')
-        // execSync('git remote add origin git@github.com:' + org + '/' + projectName + '.git')
-        // execSync('git push -u --quiet origin master')
+        execSync('mkdir -p stagingTemp/' + projectName + '/.git')
+        execSync('git init --bare stagingTemp/' + projectName + '/.git')
+        execSync('mv post-receive stagingTemp/' + projectName + '/.git/hooks/post-receive')
 
-        // //scp to staging
-        // execSync('scp -rp ' + projectPath + "/" + parentEntity + projectName + ' -P ' + stagingPort + ' ' + urbanUser + '@' + stagingIP + '/var/www/apps.urban.org/')
+        execSync('chmod +x stagingTemp/' + projectName + '/.git/hooks/post-receive')
+        execSync('scp -rp -P ' + stagingPort + ' stagingTemp/' + projectName + ' ' + urbanUser + '@' + stagingIP + ":/var/www/apps.urban.org/" + parentEntity)
+//ssh in to do this?
+        execSync('chown -R :coder stagingTemp/' + projectName + '/.git/objects')
+        execSync('chown -R :coder stagingTemp/' + projectName + '/.git/objects')
+
+        execSync('cd '+path)
+        execSync('git init')
+        execSync('git add package.json')
+        execSync('git commit -m "initial commit"')
+        execSync('curl -s -H \'Authorization: token '+ token +'\' -d \'{"name":"' + projectName + '"}\' https://api.github.com/orgs/' + org + '/repos')
+
+        // set remotes to github, staging, and prod
+        execSync('git remote add origin git@github.com:' + org + '/' + projectName + '.git')
+        execSync('git remote set-url --add --push origin ssh://' + urbanUser + '@' + stagingIP + ':' + stagingPort + fullStagingPath + '/.git')
+        execSync('git remote set-url --add --push origin git@github.com:' + org + '/' + projectName + '.git')
+
+        execSync('git push -u --quiet origin master')
+
       }.bind(this),
     });
   }
